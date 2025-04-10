@@ -1,0 +1,863 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introduction to Speech Processing</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="klatt-synth.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+    body, html {
+      font-family: Raleway, Roboto, san-serif;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      background-color: #F2DCBF;
+      color: #222222;
+    }
+
+    @media screen and (min-width: 800px) {
+      html {
+        font-size: 1.2em;
+      }
+    }
+
+    a {
+        color: hsl(214, 66%, 40%);
+        text-decoration: none;
+    }
+
+    img {
+        max-width: 100%;
+    }
+
+    section {
+        max-width: 800px;
+        margin: auto;
+    }
+
+    section.title-page {
+            text-align: left;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 3rem;
+    }
+
+    section {
+      height: 100vh;
+      padding: 2rem;
+      scroll-snap-align: start;
+      transition: background 0.5s;
+      background-color: #F2DCBF;
+    }
+
+    section div {
+        width: 100%;
+    }
+
+    .subtitle {
+        color: #444444;
+    }
+
+    .small {
+        font-size: 2rem;
+    }
+
+    .margin-top {
+        margin-top: 1rem;
+    }
+
+    h1 {
+        margin-top: 1rem;
+    }
+  </style>
+  <script src="essential_audio.js"></script>
+<link rel="stylesheet" href="essential_audio.css"></link>
+</head>
+<body>
+
+  <section class="title-page">
+      <div>Interactive Introduction to Speech Processing</div>
+      <div class="subtitle small margin-top"><a href="https://ezeh.uk">Sam Ezeh</a></div>
+  </section>
+  <section class="title-page">What is sound?</section>
+  <section class="section1">
+      <h1>What is sound?</h1>
+      <p>Sound is a vibration that travels through the air as waves of pressure caused by some vibrating object.</p>
+      <p>These waves create pockets of high and low pressure that move through the air in every direction.</p>
+      <p>When these pressure waves reach our ears, they cause our eardrums to vibrate in response.</p>
+      <p>Our brains then interpret these vibrations as sound, allowing us to hear.</p>
+      <p>Below is a recording of a man saying "hello" and a graph of how the air pressure changes over time.</p>
+      <p>Tap the beginning of the graph to listen to the man speak.</p>
+      <br>
+      <div id="hello-waveform"></div>
+        <script type="module">
+            import WaveSurfer from 'https://cdn.jsdelivr.net/npm/wavesurfer.js@7/dist/wavesurfer.esm.js'
+
+            const wavesurfer = WaveSurfer.create({
+              container: '#hello-waveform',
+              waveColor: '#4F4A85',
+              progressColor: '#383351',
+              url: 'hello.ogg',
+            })
+
+            wavesurfer.on('interaction', () => {
+              wavesurfer.play()
+            })
+        </script>
+    </section>
+    <!-- <section class="title-page">How do we perceive sound?</section> -->
+  <section>
+      <h1>How do we perceive sound?</h1>
+      <p>Technically speaking, the word "frequency" refers to how often something repeats in some amount of time.</p>
+      <p>Simply put, the faster something repeats the higher it sounds to us.</p>
+      <p>Tap the button below to hear something that vibrates about 260 times a second or at a <i>frequency</i> of <i>260 Hertz</i>.</p>
+      <br>
+        <div class="essential_audio" data-url="C2.ogg"></div>
+      <br>
+      <p>Once the sound enters our ears, our eardrums then pass the vibration on to another region of our ear called the "cochlea".</p>
+      <p>The cochlea is filled with tiny hairs that each start to wiggle in response to different frequencies and our brain then decodes these wiggles into sound.</p>
+  </section>
+
+<style>
+    .controls {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+
+    input[type="checkbox"] {
+      accent-color: #ff69b4;
+      transform: scale(2);
+      margin: 0.5rem;
+    }
+
+    svg.waveform {
+      width: 100%;
+      max-width: 600px;
+      height: 200px;
+      border-radius: 1rem;
+      background: #fff0f5;
+      box-shadow: 0 0 10px rgba(255, 105, 180, 0.2);
+    }
+
+    path {
+      transition: stroke 0.3s ease;
+    }
+button {
+      background: #ff69b4;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #ff85c1;
+    }
+  </style>
+  <section>
+      <h1>How do we perceive sound?</h1>
+      <p>The sound from earlier is called a sine wave and we can combine different sine waves to make new sounds.</p>
+      <p>If we zoom in on the sound waves then we can see a clear repeating pattern.</p>
+      <p>Tap on the different frequencies to add and remove them from the sound wave.</p>
+
+      <div style="display: flex; width: 100%; justify-content: center; align-items: center; flex-direction: column;">
+          <div class="controls" style="width: auto;">
+            <label style="display: inline;">
+              <input type="checkbox" id="f1" checked>
+              260Hz
+            </label>
+            <label style="display: inline;">
+              <input type="checkbox" id="f2" checked>
+              350Hz
+            </label>
+          </div>
+      <svg id="waveform" class="waveform"  viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg" style="margin: 1rem;">
+        <path fill="none" stroke="#ff69b4" stroke-width="2" />
+      </svg>
+      <br>
+        <button id="play">Play Tone</button>
+    </div>
+
+
+  <script>
+    const svg = document.getElementById("waveform");
+    const path = svg.querySelector("path");
+    const f1Checkbox = document.getElementById("f1");
+    const f2Checkbox = document.getElementById("f2");
+    const playButton = document.getElementById("play");
+
+    const width = 600;
+    const height = 200;
+    const midY = height / 2;
+    const pointCount = width + 1;
+    let currentY = new Array(pointCount).fill(midY);
+    let dt = 0;
+
+    function generateYValues(f1, f2) {
+      const ys = [];
+      for (let x = 0; x <= width; x++) {
+        const t = (x + ++dt) / width * 2 * Math.PI;
+        const y = Math.sin(f1 * t) * 40 + Math.sin(f2 * t) * 40;
+        ys.push(midY - y);
+      }
+      return ys;
+    }
+
+    function drawWave(ys) {
+      const points = ys.map((y, x) => `${x},${y}`);
+      const d = "M" + points.join(" L");
+      path.setAttribute("d", d);
+    }
+
+    function animateWave(toY) {
+      const duration = 400;
+      const frameRate = 60;
+      const steps = duration / (1000 / frameRate);
+      let frame = 0;
+
+      const fromY = [...currentY];
+
+      function easeInOut(t) {
+        return t < 0.5
+          ? 2 * t * t
+          : -1 + (4 - 2 * t) * t;
+      }
+
+      function update() {
+        frame++;
+        const t = Math.min(frame / steps, 1);
+        const eased = easeInOut(t);
+        currentY = currentY.map((_, i) =>
+          fromY[i] + (toY[i] - fromY[i]) * eased
+        );
+        drawWave(currentY);
+        if (frame < steps) {
+          requestAnimationFrame(update);
+        }
+      }
+
+      update();
+    }
+
+    function onToggle() {
+      const f1 = f1Checkbox.checked ? 3 : 0;
+      const f2 = f2Checkbox.checked ? 7 : 0;
+      const targetY = generateYValues(f1, f2);
+      animateWave(targetY);
+      playTone();
+    }
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const duration = 3;
+    const gainNode = audioCtx.createGain();
+    let osc1 = audioCtx.createOscillator();
+    osc1.connect(gainNode);
+    let osc2 = audioCtx.createOscillator();
+    osc2.connect(gainNode);
+
+    function playTone() {
+       try { osc1.disconnect(gainNode) } catch {};
+       try { osc2.disconnect(gainNode) } catch {};
+      const f1 = f1Checkbox.checked ? 260 : 0;
+      const f2 = f2Checkbox.checked ? 350 : 0;
+
+      gainNode.gain.setValueAtTime(0.2, audioCtx.currentTime);
+      gainNode.connect(audioCtx.destination);
+
+      if (f1) {
+        osc1 = audioCtx.createOscillator();
+        osc1.type = "sine";
+        osc1.frequency.setValueAtTime(f1, audioCtx.currentTime);
+        osc1.connect(gainNode);
+        osc1.start();
+        osc1.stop(audioCtx.currentTime + duration);
+      }
+
+      if (f2) {
+        osc2 = audioCtx.createOscillator();
+        osc2.type = "sine";
+        osc2.frequency.setValueAtTime(f2, audioCtx.currentTime);
+        osc2.connect(gainNode);
+        osc2.start();
+        osc2.stop(audioCtx.currentTime + duration);
+      }
+    }
+
+    f1Checkbox.addEventListener("change", onToggle);
+    f2Checkbox.addEventListener("change", onToggle);
+    playButton.addEventListener("click", playTone);
+
+    onToggle();
+  </script>
+  </section>
+  <!-- <section class="title-page">How do we make sounds with our mouths?</section> -->
+  <section>
+      <h1>How do we make sounds with our mouths?</h1>
+      <p>We make sounds through our mouths by pushing air from our lungs through our vocal cords.</p>
+      <p>Our vocal cords vibrate to control pitch. Tightening our vocal cords causes it to vibrate faster and produce a higher sound.</p>
+      <p>We can make different sounds by changing the shape of our mouths and moving our tongue to alter the flow of air.</p>
+      <p>For example, we can make the sounds "ee" and "uhh" by changing the position of our tongue in our mouth.</p>
+  </section>
+    <style>
+        #mouthContainer {
+            position: relative;
+            display: inline-block;
+        }
+        #tongueDot {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: #ff4444;
+            border-radius: 50%;
+            /*transform: translate(-50%, -50%);*/
+            pointer-events: none;
+            display: block;
+            box-shadow: 0 0 8px rgba(255, 68, 68, 0.5);
+            display: none;
+        }
+    </style>
+    <section>
+        <h1>How do we make sounds with our mouths?</h1>
+        <p>Tap in different locations in the mouth to simulate moving the tongue to emulate different vowel sounds.</p>
+        <div style="display: flex; justify-content: center; margin: auto;">
+            <span id="mouthContainer">
+                <img id="mouthImg" src="mouth-no-tongue.svg" style="width: 400px; margin-top: 1rem;">
+                <div id="tongueDot"></div>
+            </div>
+        </div>
+    </section>
+    <script>
+        const mouthImg = document.getElementById('mouthImg');
+        const tongueDot = document.getElementById('tongueDot');
+        let audioContext = null;
+
+        function handleClick(event) {
+            if (!mouthImg.naturalWidth) return;
+            const rect = mouthImg.getBoundingClientRect();
+            const dx = event.clientX - rect.left;
+            const dy = event.clientY - rect.top;
+            if (!(0 <= dx) || !(dx <= rect.width) || !(0 <= dy) || !(dy <= rect.height)) return;
+            const dxNorm = dx / rect.width;
+            const dyNorm = dy / rect.height;
+
+            const scaleX = mouthImg.width / rect.width;
+            const scaleY = mouthImg.height / rect.height;
+            const x = (event.clientX - rect.left) * scaleX;
+            const y = (event.clientY) * scaleY;
+
+            xMin = 0.2;
+            yMin = 0.55;
+            xMax = 0.51;
+            yMax = 0.75;
+            const xNorm = (dxNorm - xMin) / (xMax - xMin);
+            const yNorm = (dyNorm - yMin) / (yMax - yMin);
+            if (!(0 <= xNorm) || !(xNorm <= 1) || !(0 <= yNorm) || !(yNorm <= 1)) return;
+            tongueDot.style.left = `${event.clientX - rect.left - 5}px`;
+            tongueDot.style.top = `${event.clientY - rect.top + 12}px`;
+            tongueDot.style.display = 'block';
+
+
+            const F1 = 250 + (900 - 250) * yNorm;
+            const F2 = 2400 + (500 - 2400) * xNorm;
+            play(`f0=220&f1=${F1}/76/0&f2=${F2}/102/-8&f3=2831/72/-15&f4=3168/102/-19&f5=4135/816/-30&f6=5020/596/-35`)
+
+        }
+
+        mouthImg.addEventListener('load', () => {
+            mouthImg.addEventListener('click', handleClick);
+        });
+    </script>
+  <section>
+      <h1>How do we make sounds with our mouths?</h1>
+      Tap the play button to listen to the <a href="https://en.wikipedia.org/wiki/DECtalk">DECtalk synthesiser</a> sing <a href="https://en.wikipedia.org/wiki/Daisy_Bell">Daisy Bell</a>
+      <br>
+      <br>
+      <div class="essential_audio" data-url="daisy-bell.ogg"></div>
+  </section>
+  <section class="title-page">The source-filter model</section>
+  <section>
+      <h1>The source-filter model</h1>
+      <p>The source-filter model approximates the sound-making process in our mouth by separating out the sound we make into two parts: the "source" and the "filter".</p>
+      <p>The source corresponds to the air flow from the lungs supplying the sound wave with a pulse of sound energy.</p>
+      <p>The filter corresponds to our vocal tract modifying the the sound wave to produce the different noises we hear when we speak.</p>
+      <p>Mathematically this is represented as a "<a href="https://en.wikipedia.org/wiki/Convolution">convolution</a>".</p>
+      <div style="height: 30%; display: flex; justify-content: center;">
+          <img src="source-filter.svg" style="height: 100%;"> </img>
+      </div>
+  </section>
+    <style>
+        input[type="radio"] {
+          accent-color: #ff69b4;
+          transform: scale(2);
+          margin: 0.5rem;
+        }
+    </style>
+  <style>
+    
+    .control-group {
+      display: flex;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .control-group label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      color: #333;
+    }
+    .box-group {
+        margin-top: 2rem;
+    }
+  </style>
+  <section>
+      <h1>The source-filter model</h1>
+      <p>Tap to select different sources and filters to create different sound waves.</p>
+    <div class="box-group">
+      <div class="group-title">Sources</div>
+      <div class="control-group">
+        <label>
+          <input type="radio" name="source" value="violin" onchange="selectViolin()" selected autocomplete="off">
+          Violin
+        </label>
+        <label>
+          <input type="radio" name="source" value="chainsaw" onchange="selectChainsaw()" autocomplete="off">
+          Chainsaw
+        </label>
+      </div>
+    </div>
+
+    <div class=box-group>
+      <div class="group-title">Filters</div>
+      <div class="control-group">
+        <label>
+          <input type="radio" name="filter" value="algebra" onchange="selectAlgebra()" selected autocomplete="off">
+          "Algebra is a branch of mathematics."
+        </label>
+        <label>
+          <input type="radio" name="filter" value="remarkable" onchange="selectRemarkable()" autocomplete="off">
+          "She achieved remarkable results."
+        </label>
+      </div>
+    </div>
+    <div style="display: flex; justify-content: center;"> <button onclick="playSynthesis()"> Synthesise</button> </div>
+  <audio id="violin" src="violin-clip.mp3"></audio>
+  <audio id="chainsaw" src="chainsaw-clip.mp3"></audio>
+  <audio id="algebra" src="algebra.mp3"></audio>
+  <audio id="remarkable" src="remarkable.mp3"></audio>
+  <audio id="algebra-violin" src="algebra-violin.mp3"></audio>
+  <audio id="algebra-chainsaw" src="algebra-chainsaw.mp3"></audio>
+  <audio id="remarkable-violin" src="remarkable-violin.mp3"></audio>
+  <audio id="remarkable-chainsaw" src="remarkable-chainsaw.mp3"></audio>
+  </section>
+  <script>
+      let source = "violin";
+      let filter = "algebra";
+      const violinElement = document.getElementById("violin");
+      const chainsawElement = document.getElementById("chainsaw");
+      const remarkableElement = document.getElementById("remarkable");
+      const algebraElement = document.getElementById("algebra");
+      let hasPlayedViolin = false;
+      let hasPlayedChainsaw = false;
+      let hasPlayedRemarkable = false;
+      let hasPlayedAlgebra = false;
+      const selectViolin = () => {
+          source = "violin";
+          if (!hasPlayedViolin) violinElement.play();
+          hasPlayedViolin = true;
+      }
+      const selectChainsaw = () => {
+          source = "chainsaw";
+          if (!hasPlayedChainsaw) chainsawElement.play();
+          hasPlayedChainsaw = true;
+      }
+
+      const selectAlgebra = () => {
+          filter = "algebra";
+          if (!hasPlayedAlgebra) algebraElement.play();
+          hasPlayedAlgebra = true;
+      }
+
+      const selectRemarkable = () => {
+          filter = "remarkable";
+          if (!hasPlayedRemarkable) remarkableElement.play();
+          hasPlayedRemarkable = true;
+      }
+     const playSynthesis = () => {
+         document.getElementById(`${filter}-${source}`).play();
+      }
+  </script>
+  <section class="title-page">Linear Predictive Coding</section>
+  <section class="lpc">
+      <h1>Linear Predictive Coding</h1>
+      <p>Linear predictive coding refers to a method to separate out the effects of the source and the filter in a sound wave.</p>
+      <p>It works by modelling the filter as an <a href="https://en.wikipedia.org/wiki/Autoregressive_model">autoregressive linear function</a>. This means that we assume that we can work out what the next part of the speech is by adding and multiplying previous pressure values of the sound wave.</p>
+      <p>The animation below shows that we only need to look at two previous values to work out the next value of a sine wave. φ₁ controls how much we multiply the previous value and φ₂ controls how much we multiply the value before that.</p>
+      <p>Modify the the model parameters below to create different sound waves.</p>
+      <canvas id="canvas" width="1200" height="300"></canvas>
+
+      <div class="controls">
+        <label>
+          φ₁
+          <input id="phi1" type="range" min="-1.5" max="1.98" step="0.1">
+          <span id="phi1Display"></span>
+        </label>
+        <label>
+          φ₂
+          <input id="phi2" type="range" min="-1.5" max="1.5" step="0.1">
+          <span id="phi2Display"></span>
+        </label>
+      </div>
+      <div style="display: flex; justify-content: center;">
+        <button id="restartBtn">Restart</button>
+      </div>
+
+  </section>
+  <style>
+    .lpc input[type="range"] {
+      vertical-align: middle;
+      accent-color: #ff69b4;
+      width: 60px;
+    }
+    .lpc label {
+      font-size: 1.3em;
+    }
+
+    .lpc span {
+      margin-left: 5px;
+    }
+
+    .lpc .controls {
+      padding: 10px;
+      background: #ffe6f0;
+      display: flex;
+      justify-content: space-around;
+      border-radius: 15px;
+    }
+
+    .lpc canvas {
+        width: 100%;
+    }
+
+  </style>
+  <script>
+    (() => {
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+
+    const width = canvas.width;
+    const height = canvas.height;
+
+    const omega = Math.PI / 20;
+    const defaultPhi1 = 2 * Math.cos(omega);
+    const defaultPhi2 = -1;
+    let phi1 = defaultPhi1;
+    let phi2 = defaultPhi2;
+    const phi1Slider = document.getElementById("phi1");
+    const phi2Slider = document.getElementById("phi2");
+    const phi1Display = document.getElementById("phi1Display");
+    const phi2Display = document.getElementById("phi2Display");
+
+    const initPhi = () => {
+        phi1 = defaultPhi1;
+        phi2 = defaultPhi2;
+
+        phi1Slider.value = phi1;
+        phi2Slider.value = phi2;
+        phi1Display.textContent = phi1.toFixed(1);
+        phi2Display.textContent = phi2.toFixed(1);
+    };
+
+
+    const numFrames = 300;
+    const windowSize = 60;
+    let x = new Array(numFrames).fill(0);
+    let currentFrame = 0;
+
+    x[0] = Math.sin(0);
+    x[1] = Math.sin(omega);
+
+    const xStep = width / windowSize;
+    const yScale = height / 3;
+    const yCenter = height / 2;
+
+    let animInterval;
+
+    function clearCanvas() {
+      ctx.clearRect(0, 0, width, height);
+    }
+
+    function drawCurve() {
+      ctx.beginPath();
+      const start = Math.max(0, currentFrame - windowSize + 1);
+      for (let i = start; i <= currentFrame; i++) {
+        const t = (i - start) * xStep;
+        const y = yCenter - x[i] * yScale;
+        if (i === start) ctx.moveTo(t, y);
+        else ctx.lineTo(t, y);
+      }
+      ctx.lineWidth = 10;
+      ctx.strokeStyle = "#ff85a2";
+      ctx.stroke();
+    }
+
+    function drawArrow(x1, y1, x2, y2, color) {
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.fillStyle = color;
+      ctx.lineWidth = 10;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+
+      const headLength = 40;
+      y2 += 10 * Math.sign(y2 - yCenter);
+      const angle = Math.atan2(y2 - y1, x2 - x1);
+      ctx.beginPath();
+      ctx.moveTo(x2, y2);
+      ctx.lineTo(x2 - headLength * Math.cos(angle - Math.PI / 6),
+                 y2 - headLength * Math.sin(angle - Math.PI / 6));
+      ctx.lineTo(x2 - headLength * Math.cos(angle + Math.PI / 6),
+                 y2 - headLength * Math.sin(angle + Math.PI / 6));
+      ctx.lineTo(x2, y2);
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function drawContributions() {
+      if (currentFrame < 2) return;
+      const baseX = (windowSize - 1) * xStep;
+      drawArrow(baseX, yCenter, baseX, yCenter - x[currentFrame] * yScale, "#ffb347");
+    }
+
+    function updateSimulation() {
+      if (currentFrame < numFrames - 1) {
+        if (currentFrame >= 1) {
+          const newValue = phi1 * x[currentFrame] + phi2 * x[currentFrame - 1];
+          currentFrame++;
+          x[currentFrame] = newValue;
+        } else {
+          currentFrame++;
+        }
+      } else {
+        clearInterval(animInterval);
+      }
+    }
+
+    function animate() {
+      clearCanvas();
+      drawCurve();
+      drawContributions();
+    }
+
+    function restartSimulation() {
+      clearInterval(animInterval);
+      currentFrame = 1;
+      x = new Array(numFrames).fill(0);
+      x[0] = Math.sin(0);
+      x[1] = Math.sin(omega);
+      initPhi();
+      while (currentFrame < windowSize) updateSimulation();
+      animInterval = setInterval(() => {
+        updateSimulation();
+        animate();
+      }, 100);
+    }
+
+    phi1Slider.addEventListener("input", function() {
+      phi1 = parseFloat(this.value);
+      phi1Display.textContent = phi1.toFixed(1);
+    });
+
+    phi2Slider.addEventListener("input", function() {
+      phi2 = parseFloat(this.value);
+      phi2Display.textContent = phi2.toFixed(1);
+    });
+
+    document.getElementById("restartBtn").addEventListener("click", () => {
+      restartSimulation();
+    });
+
+    restartSimulation();
+    })()
+  </script>
+  <section class="title-page">Formants</section>
+  <style>
+    #formant-div {
+        display: none;
+        margin-top: 3rem;
+        font-weight: bold;
+      font-size: 25pt;
+    }
+    .formant input[type="range"] {
+      vertical-align: middle;
+      accent-color: #ff69b4;
+      width: 100%;
+      display: none;
+    }
+  </style>
+<section class="formant">
+    <h1>Formants</h1>
+    <p>Formants are the extra frequencies created by our vocal tract that give vowels their unique sound.</p>
+    <p>Speak into your microphone to see the sound wave and the formants change as you change the shape of your mouth.</p>
+    <p>Try saying "ee" then pulling your tongue back to say "oo" to see how the formant changes.</p>
+    
+    <div id="formant-div">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span>oo</span>
+            <input id="formant-value" type="range" min="500" max="2500" style="flex: 1;">
+            <span>ee</span>
+        </div>
+    </div>
+
+    <div class="button-div">
+        <button id="start" onclick="begin()">Start demo</button>
+    </div>
+</section>
+        <script>
+
+            const begin = () => {
+            const importObject = {
+                my_namespace: {
+                    imported_func: arg => {
+                        console.log(arg);
+                    }
+                }
+            };
+
+            WebAssembly.instantiateStreaming(fetch("formant-finder.wasm"), importObject).then(x => {
+                window.ar = x;
+                window.burgs_method = x.instance.exports.burgs_method;
+            }).then(() => start());
+
+
+            const f1Buffer = [];
+            const f2Buffer = [];
+
+            const rms = (snippet) => {
+              let sum = 0;
+              for (let i = 0; i < snippet.length; i++) {
+                sum += snippet[i] * snippet[i];
+              }
+              return Math.sqrt(sum / snippet.length);
+            }
+            const start = async () => {
+                document.getElementById("start").style.display = "none";
+                document.getElementById("formant-value").style.display = "block";
+                document.getElementById("formant-div").style.display = "block";
+                const audioContext = new AudioContext();
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    audio: true,
+                    echoCancellation: false,
+                    noiseSuppresion: false,
+                    channelCount: 1,
+                    sampleRate: 44100,
+                });
+                const source = audioContext.createMediaStreamSource(stream);
+                await audioContext.audioWorklet.addModule('processor.js');
+                const workletNode = new AudioWorkletNode(audioContext, 'processor');
+                source.connect(workletNode);
+                workletNode.connect(audioContext.destination);
+
+                const ORDER = 50;
+                const MAX_DATA_SIZE = 88200;
+                const MAX_BUFFER = 10;
+
+                const data_ptr = ar.instance.exports.alloc(MAX_DATA_SIZE);
+                const coefficients_ptr = ar.instance.exports.alloc(ORDER);
+                const formants_ptr = ar.instance.exports.alloc(2);
+
+                workletNode.port.onmessage = (event) => {
+                    if (rms(event.data) < 0.01) return;
+                    data_size = Math.min(MAX_DATA_SIZE, event.data.length)
+
+                    const data = new Float32Array(ar.instance.exports.memory.buffer, data_ptr, data_size);
+                    const formants = new Float32Array(ar.instance.exports.memory.buffer, formants_ptr, 2);
+                    for (i = 0; i < data_size; ++i) {
+                        data[i] = event.data[i];
+                    }
+
+                    // hamming window
+                    for (let i = 0; i < data.length; i++) {
+                        const w = 0.54 - 0.46 * Math.cos((2 * Math.PI * i) / (data.length - 1));
+                        data[i] *= w;
+                    }
+
+                    burgs_method(data_ptr, coefficients_ptr, formants_ptr, data_size, ORDER);
+
+                    const f1 = Math.round(formants[0]);
+                    const f2 = Math.round(formants[1]);
+                    if (isFinite(f1) || isFinite(f2)) {
+                        f1Buffer.push(f1);
+                        f2Buffer.push(f2);
+                    }
+                    if (f1Buffer.length > MAX_BUFFER) f1Buffer.shift();
+                    if (f2Buffer.length > MAX_BUFFER) f2Buffer.shift();
+
+                    const avg = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
+                    const averageF1 = avg(f1Buffer);
+                    const averageF2 = avg(f2Buffer);
+
+                    document.getElementById("formant-value").value = averageF2;
+                };
+            }
+            }
+        </script>
+  </section>
+  <section>
+      <h1>The end</h1>
+      <p>I wrote the Formant estimation code in <a href="https://ziglang.org/">Zig</a> where I implemented <a href="https://c.mql5.com/3/133/Tutorial_on_Burg_smethod_algorithm_recursion.pdf">Burg's algorithm</a> and you can find my source code <a href="https://github.com/dignissimus/acoustic-plane/blob/main/src/ar.zig">here</a>. I use <a href="https://github.com/bluealmost/zpoly">zpoly</a> for polynomial root-finding.</p>
+      <p>I also wrote a Python program to create animated vowel formant plots and you can find that <a href="https://github.com/dignissimus/formant-plotter/">here</a></p>
+      <p>I used <a href="https://github.com/chdh/klatt-syn">Christian d'Heureuse's implementation</a> of <a href="https://en.wikipedia.org/wiki/Dennis_H._Klatt">Dennis Klatt</a>'s <a href="https://linguistics.berkeley.edu/plab/guestwiki/index.php?title=Klatt_Synthesizer">Klatt Synthesiser</a> to synthesise speech in the vowel sounds demonstration.</p>
+      <p>I also wrote a game that uses formants and you can find it <a href="#">here</a>.</p>
+  </section>
+
+  <section class="title-page">References</section>
+  <section>
+      <h1>References</h1>
+      <ul>
+          <li>Rabiner, Lawrence R., and Ronald W. Schafer. "Introduction to digital speech processing."</li>
+          <li>Rabiner, Lawrence R. Digital processing of speech signals. Pearson Education India, 1978.</li>
+          <li>Reetz, Henning, and Allard Jongman. Phonetics: Transcription, production, acoustics, and perception. John Wiley & Sons, 2020.</li>
+          <li>
+              The ear does not do a Fourier transform
+              <ul>
+                  <li>
+                      <a href="https://www.dissonances.blog/p/the-ear-does-not-do-a-fourier-transform">https://www.dissonances.blog/p/the-ear-does-not-do-a-fourier-transform</a>
+                  </li>
+              </ul>
+          </li>
+          <li>KlattSyn - Klatt Formant Synthesizer
+              <ul>
+                  <li>
+                      <a href="https://www.source-code.biz/klattSyn/">https://www.source-code.biz/klattSyn/</a>
+                  </li>
+              </ul>
+          </li>
+      </ul>
+</section>
+</body>
+</html>
